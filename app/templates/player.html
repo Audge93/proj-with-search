@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+<!-- Player information block -->
+{% block content %}
+<div style="display:flex;flex-direction:row;flex-wrap: wrap; width:100%;">
+	<div style="width:100%;">
+		<div style="display:flex; flex-direction: row; align-items: center;">
+			{% if player.playerImage is not none %}
+			 <img src="{{player.playerImage}}" alt="Avatar">
+			{% endif %}
+			<h1 class="playerName">{{player.nameFirst}}  {{player.nameLast}}</h1> 	
+			
+				{% if liked == 0 %}
+				<div id="unliked" onClick="handleInsert('{{player.playerId}}')" >&#9825 </div>
+				{% else %}
+				<div id="liked"  onClick="handleRemove('{{player.playerId}}')">&#10084;</div>
+				{% endif %}
+
+		</div>
+		<h4>Position:  </h4>
+		<h4>Bats:{{player.bats}}      Thows: {{player.throws}}  </h4>
+		<p>{{ "%.0f"| format(player.height/12) }}-{{ "%.0f"| format(((player.height/12)%1)*10) }}, {{player.weight}}lb  ( {{"%.0f"| format(player.height*2.54)}}cm, {{"%.2f"| format(player.weight/2.205)}}kg )
+		</p>
+		
+		<p>Born: {{player.dateFormatter(player.birth_date, "%B %d, %Y")}} 
+		{% if player.death_date is none %}(Age: {{player.getAge()}} )  
+		{% endif %} in {{player.birthCity}}, 
+		{% if player.birthCountry == 'USA' %}{{player.birthState}} {% else %} {{player.birthCountry}} 
+		{% endif %}</p>
+		{% if player.death_date is not none %}
+			<p>Died: {{player.dateFormatter(player.death_date, "%B %d, %Y") }} (Age: {{player.getAge()}} ) 
+			in {{player.deathCity}}, 
+			{% if player.deathCountry == 'USA' %}{{player.deathState}} {% else %} {{player.deathCountry}}
+			{% endif %} \
+		{% endif %} 
+		</p> 
+		<p>Debut: {{player.dateFormatter(player.debut_date, "%B %d, %Y")}} </p>
+		<p>{% if player.finalgame_date is not none %} Last Game: {{player.dateFormatter(player.finalgame_date, "%B %d, %Y")}} {% endif %}  </p>
+		<p>Full Name: {{player.nameGiven}} {{player.nameLast}}</p>
+		
+		<br>
+		
+		<table style="width:50%; border-spacing: 0;">
+			<tr>
+				<th style="color:#900;border-right: solid; width: 78px; text-align:left; border-right-color:lightgray;">Summary</th>
+				<th style="color:#900;">AB</th>
+				<th style="color:#900;">H</th>
+				<th style="color:#900;">HR</th>
+				<th style="color:#900;border-right: solid;border-right-color:lightgray;">BA</th>
+				<th style="color:#900;">R</th>
+				<th style="color:#900;">RBI</th>
+				<th style="color:#900;">SB</th>
+			</tr>
+			<tr>
+				<td style="border-right: solid;vertical-align: middle; border-right-color:lightgray;">Career</td>
+				<td style="text-align: center;vertical-align: middle;">{{carrer_summary['sumAB']}}</td>
+				<td style="text-align: center;vertical-align: middle;">{{carrer_summary['sumHits']}}</td>
+				<td style="text-align: center;vertical-align: middle;">{{carrer_summary['sumHr']}}</td>
+				<td style="border-right: solid;text-align: center;vertical-align: middle; border-right-color:lightgray;">{{"%.3f"| format(carrer_summary['ba'])}}</td>
+				<td style="text-align: center;vertical-align: middle;">{{carrer_summary['sumR']}}</td>
+				<td style="text-align: center;vertical-align: middle;">{{carrer_summary['SumRBI']}}</td>
+				<td style="text-align: center;vertical-align: middle;">{{carrer_summary['sumSB']}}</td>
+			</tr>
+		</table>
+	</div>
+	<!-- Commenting out until verification of awards
+	<div>
+	{% for awards in player.awards %}
+		<p>{{awards.awardId}}</p>
+	{% endfor %}
+	</div>-->
+</div>
+
+	{% if player.battingDetails is not none %}
+		<h2>Standard Batting</h2>
+			<table style="padding: 4px 3px;border-spacing: 0;">
+				<tr>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>Year</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>Age</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>Tm</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>Lg</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>G</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>PA</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>AB</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>R</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>H</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>2B</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>HR</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>RBI</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>SB</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>CS</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>BB</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>SO</b> </th>
+					<th style="color:#900;background-color:#eee;width:47px;"><b>BA</b> </th>
+				</tr>
+				{% for batting in player.battingDetails %}
+					<tr>
+						<td style="border: solid lightgray 1px;">{{batting.yearId}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.getAge(player.birthYear)}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.teamId}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.lgId}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.g}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.getPA()}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.ab}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.r}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.h}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.b2}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.hr}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.rbi}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.sb}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.coalesce(batting.cs)}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.bb}}</td>
+						<td style="border: solid lightgray 1px;">{{batting.so}}</td>
+						<td style="border: solid lightgray 1px;">{{"%.3f"| format(batting.getBA())}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		
+	{% endif %}
+	<script src="{{url_for('static', filename='javascript/player.js')}}"></script>
+{% endblock %}

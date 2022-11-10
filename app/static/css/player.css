@@ -1,0 +1,19 @@
+.playerName{
+	color: black;
+}
+#unliked{
+	margin-left:5px;
+	cursor: pointer;
+}
+#liked{
+	margin-left:5px;
+	color:red;
+	cursor: pointer;
+}
+
+img{
+	width: 200px;
+	height:200px;
+	margin-right:10px;
+	
+}

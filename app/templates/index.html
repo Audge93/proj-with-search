@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+	{% if current_user.is_anonymous %}
+	   <h1> Please Login </h1>
+	{% else %}
+       <h1>Hi, {{ current_user.username }}!</h1>
+	   {% if posts|length != 0 %}
+		   <h2>Liked Players</h2>
+		   <div style="display:flex; flex-direction: row;">
+		   {% for players in posts %}
+		    <div class="card">
+			  <img src="{{players.playerImage}}" alt="Avatar" style="width:50%">
+		
+			  <div class="container">
+				<h4><a href="player/{{players.playerId}}"><strong>{{players.nameFirst}} {{players.nameLast}}</strong></a></h4> 
+				<p>Architect and Engineer</p> 
+			  </div>
+			</div>
+		   {% endfor %}
+			</div>
+	   {% endif %}
+	{% endif %}
+    
+{% endblock %}
